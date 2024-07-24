@@ -31,7 +31,7 @@ spec:
         - name: POSTGRES_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: {{ .name }}-secret
+              name: {{ .name }}-secrets
               key: {{ .secretEnv.POSTGRES_PASSWORD }}
         {{- end }}
         {{- if eq .type "mysql" }}
@@ -42,12 +42,12 @@ spec:
         - name: MYSQL_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: {{ .name }}-secret
+              name: {{ .name }}-secrets
               key: {{ .secretEnv.MYSQL_PASSWORD }}
         - name: MYSQL_ROOT_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: {{ .name }}-secret
+              name: {{ .name }}-secrets
               key: {{ .secretEnv.MYSQL_ROOT_PASSWORD }}
         {{- end }}
         resources:
