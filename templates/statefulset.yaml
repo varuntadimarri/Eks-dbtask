@@ -23,15 +23,33 @@ spec:
         ports:
         - containerPort: {{ .port | default 5432 }}
         env:
+        {{- if eq .type "postgresql" }}
         - name: POSTGRES_DB
-          value: {{ .env.POSTGRES_DB | quote }}
+          value: {{ .env.POSTGRES_DB }}
         - name: POSTGRES_USER
           value: {{ .env.POSTGRES_USER }}
         - name: POSTGRES_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: {{ .name }}-secrets
+              name: {{ .name }}-secret
               key: {{ .secretEnv.POSTGRES_PASSWORD }}
+        {{- end }}
+        {{- if eq .type "mysql" }}
+        - name: MYSQL_DATABASE
+          value: {{ .env.MYSQL_DATABASE }}
+        - name: MYSQL_USER
+          value: {{ .env.MYSQL_USER }}
+        - name: MYSQL_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ .name }}-secret
+              key: {{ .secretEnv.MYSQL_PASSWORD }}
+        - name: MYSQL_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ .name }}-secret
+              key: {{ .secretEnv.MYSQL_ROOT_PASSWORD }}
+        {{- end }}
         resources:
           requests:
             cpu: {{ .resources.requests.cpu }}
