@@ -1,0 +1,55 @@
+---
+{{- range .Values.databases }}
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ .name }}
+  labels:
+    app: {{ .name }}
+spec:
+  serviceName: "{{ .name }}"
+  replicas: {{ .replicas | default 1 }}
+  selector:
+    matchLabels:
+      app: {{ .name }}
+  template:
+    metadata:
+      labels:
+        app: {{ .name }}
+    spec:
+      containers:
+      - name: {{ .name }}
+        image: {{ .image }}
+        ports:
+        - containerPort: {{ .port | default 5432 }}
+        env:
+        - name: POSTGRES_DB
+          value: {{ .env.POSTGRES_DB | quote }}
+        - name: POSTGRES_USER
+          value: {{ .env.POSTGRES_USER }}
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ .name }}-secrets
+              key: {{ .secretEnv.POSTGRES_PASSWORD }}
+        resources:
+          requests:
+            cpu: {{ .resources.requests.cpu }}
+            memory: {{ .resources.requests.memory }}
+          limits:
+            cpu: {{ .resources.limits.cpu }}
+            memory: {{ .resources.limits.memory }}
+        volumeMounts:
+        - name: data
+          mountPath: {{ .dataPath | default "/var/lib/postgresql/data" }}
+  volumeClaimTemplates:
+  - metadata:
+      name: data
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      storageClassName: {{ .storageClass | default "standard" }}
+      resources:
+        requests:
+          storage: {{ .storage | default "1Gi" }}
+---
+{{- end }}

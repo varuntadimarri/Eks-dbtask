@@ -1,0 +1,31 @@
+Thank you for installing {{ .Chart.Name }}.
+
+Your release is named {{ .Release.Name }}.
+
+To learn more about the release, try:
+
+  $ helm status {{ .Release.Name }}
+  $ helm get all {{ .Release.Name }}
+
+{{- if .Values.databases }}
+The following database instances have been deployed:
+
+{{- range .Values.databases }}
+  - {{ .name }}:
+    * Type: {{ .type | default "Unknown" }}
+    * Port: {{ .port }}
+    * Service: {{ .name }}
+    * Credentials: Stored in Secret '{{ .name }}-secrets'
+      (Use 'kubectl get secret {{ .name }}-secrets -o jsonpath="{.data.<SECRET_KEY>}" | base64 --decode' to retrieve)
+
+    To connect to {{ .name }} from within the cluster, use:
+    {{ .name }}:{{ .port }}
+
+{{- end }}
+{{- else }}
+No database instances were defined in the values file.
+{{- end }}
+
+For more information on how to use these databases, please refer to their respective documentation:
+- PostgreSQL: https://www.postgresql.org/docs/
+- MySQL: https://dev.mysql.com/doc/

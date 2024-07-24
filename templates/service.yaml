@@ -1,0 +1,16 @@
+---
+{{- range .Values.databases }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .name }}
+spec:
+  selector:
+    app: {{ .name }}
+  ports:
+    - protocol: TCP
+      port: {{ .port | default 5432 }}
+      targetPort: {{ .port | default 5432 }}
+  clusterIP: None
+---
+{{- end }}

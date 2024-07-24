@@ -1,0 +1,25 @@
+databases:
+  - name: mysql-db
+    type: mysql
+    image: mysql:8
+    replicas: 1
+    port: 3306
+    dataPath: /var/lib/mysql
+    storage: 5Gi
+    storageClass: standard
+    env:
+      MYSQL_DATABASE: mydb
+      MYSQL_USER: user
+    secretEnv:
+      MYSQL_PASSWORD: mysql-password
+      MYSQL_ROOT_PASSWORD: mysql-root-password
+    secrets:
+      mysql-password: changeme
+      mysql-root-password: changeme
+    resources:
+      requests:
+        cpu: 100m
+        memory: 128Mi
+      limits:
+        cpu: 500m
+        memory: 512Mi

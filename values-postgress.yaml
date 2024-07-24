@@ -1,0 +1,23 @@
+databases:
+  - name: postgres-db
+    type: postgresql
+    image: postgres:13
+    replicas: 1
+    port: 5432
+    dataPath: /var/lib/db
+    storage: 5Gi
+    storageClass: standard-new
+    env:
+      POSTGRES_DB: mydb
+      POSTGRES_USER: user
+    secretEnv:
+      POSTGRES_PASSWORD: postgres-password
+    secrets:
+      postgres-password: changeme
+    resources:
+      requests:
+        cpu: 100m
+        memory: 128Mi
+      limits:
+        cpu: 500m
+        memory: 512Mi
